@@ -1,0 +1,19 @@
+1] DoDealStore (While storing data from Hbase to MySql)
+___________________________________________________
+
+import org.apache.commons.io.IOUtils
+import java.nio.charset.StandardCharsets
+import groovy.json.JsonOutput
+import attributes.transform
+ 
+flowFile = session.get()
+if(!flowFile)return
+
+session.write(flowFile, {inputStream,outputStream ->
+def text = IOUtils.toString(inputStream, StandardCharsets.UTF_8)
+def output = transform.doDealStore1(text.toString())
+outputStream.write(output.getBytes())
+ 
+} as StreamCallback)
+
+session.transfer(flowFile, ExecuteScript.REL_SUCCESS)
